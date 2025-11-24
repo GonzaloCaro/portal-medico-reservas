@@ -2,7 +2,8 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "cli": {
-    "packageManager": "yarn"
+    "packageManager": "yarn",
+    "analytics": "4954efd2-99b2-4757-97c8-e458be8be8ed"
   },
   "newProjectRoot": "projects",
   "projects": {
@@ -14,9 +15,11 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular/build:application",
+          "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "browser": "src/main.ts",
+            "outputPath": "dist/portal-medico-reservas",
+            "index": "src/index.html",
+            "main": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "assets": [
               {
@@ -24,14 +27,7 @@
                 "input": "public"
               }
             ],
-            "styles": [
-              "src/styles.css"
-            ],
-            "server": "src/main.server.ts",
-            "outputMode": "server",
-            "ssr": {
-              "entry": "src/server.ts"
-            }
+            "styles": ["src/styles.css", "node_modules/bootstrap/dist/css/bootstrap.min.css"]
           },
           "configurations": {
             "production": {
@@ -58,7 +54,7 @@
           "defaultConfiguration": "production"
         },
         "serve": {
-          "builder": "@angular/build:dev-server",
+          "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
               "buildTarget": "portal-medico-reservas:build:production"

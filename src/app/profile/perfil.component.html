@@ -1,0 +1,57 @@
+<div class="perfil container">
+  <div class="row gap-0">
+    <div class="col-md-4 avatar-container mb-2">
+      <div class="card profile-card">
+        <div class="card-body text-center">
+          <i class="bi bi-person-square text-4xl"></i>
+          <h4 class="p-2" id="profileName">{{ sesion.nombre }}</h4>
+          <p class="" id="profileEmail">{{ sesion.email }}</p>
+          <button class="btn btn-change-photo" id="changePhoto" disabled>Cambiar Foto</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-8 profile-form">
+      <div class="card-header">
+        <h5>Editar Perfil</h5>
+      </div>
+      <div class="card form-container">
+        <div class="inputs-container">
+          <div class="form-group">
+            <label for="editName">Nombre Completo</label>
+            <input [(ngModel)]="sesion.nombre" type="text" class="form-control input" />
+          </div>
+
+          <div class="form-group input">
+            <label for="editName">Nombre Usuario</label>
+            <input [(ngModel)]="sesion.usuario" type="text" class="form-control" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label fw-bold">Email</label>
+            <input [(ngModel)]="sesion.email" type="email" class="form-control" />
+          </div>
+        </div>
+        <div class="inputs-container2">
+          <div class="form-group">
+            <label for="currentPassword">Contraseña Actual</label>
+            <input [(ngModel)]="sesion.password" type="password" class="form-control" />
+          </div>
+
+          <div class="form-group">
+            <label for="currentPassword">Tipo de Usuario</label>
+            <input [value]="sesion.tipo" class="form-control" disabled />
+          </div>
+        </div>
+        <div class="button">
+          <button class="btn btn-guardar-cambios" (click)="guardarCambios()">
+            Guardar Cambios
+          </button>
+          <div class="text-success mt-3 text-center text-2xl" *ngIf="mensaje">
+            {{ mensaje }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
