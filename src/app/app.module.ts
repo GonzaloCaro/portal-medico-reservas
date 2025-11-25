@@ -5,15 +5,29 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { FormsModule } from '@angular/forms';
 import { NavbarComponent } from './navbar/navbar.component';
 import { RecoverComponent } from './recover/recover.component';
 import { LoginComponent } from './login/login.component';
+import { RegisterComponent } from './register/register.component';
 import { PerfilComponent } from './profile/perfil.component';
-import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { ReservasComponent } from './reservas/reservas.component';
+import { HomeComponent } from './home/home.component';
 
 @NgModule({
-  declarations: [AppComponent, NavbarComponent, RecoverComponent, LoginComponent, PerfilComponent],
+  declarations: [
+    AppComponent,
+    NavbarComponent,
+    RecoverComponent,
+    LoginComponent,
+    RegisterComponent,
+    PerfilComponent,
+    HomeComponent,
+    ReservasComponent,
+  ],
   imports: [
+    HttpClientModule,
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,

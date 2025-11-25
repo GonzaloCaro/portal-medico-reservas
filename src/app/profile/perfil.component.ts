@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { environment } from '../../enviroments/enviroment';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { AuthService } from '../services/auth.service';
 
 /**
  * Componente para mostrar y gestionar el perfil de usuario
@@ -13,29 +16,14 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./perfil.component.css'],
 })
 export class PerfilComponent implements OnInit {
-  /**
-   * Objeto que contiene los datos de la sesión actual del usuario
-   * @type {any}
-   */
+  private readonly API_BASE_URL = `${environment.apiAuthUrl}/api/usuarios`;
+
+  constructor(private http: HttpClient, private auth: AuthService) {}
+
   sesion: any = null;
-
-  /**
-   * Array que contiene todos los usuarios registrados
-   * @type {any[]}
-   */
   usuarios: any[] = [];
-
-  /**
-   * Mensaje para mostrar feedback al usuario
-   * @type {string}
-   */
   mensaje = '';
 
-  /**
-   * Método del ciclo de vida de Angular que se ejecuta al inicializar el componente
-   * @method ngOnInit
-   * @returns {void}
-   */
   ngOnInit(): void {
     const sesionStr = localStorage.getItem('sesion');
     this.sesion = sesionStr ? JSON.parse(sesionStr) : null;
@@ -50,18 +38,49 @@ export class PerfilComponent implements OnInit {
     }
   }
 
-  /**
-   * Guarda los cambios realizados en el perfil del usuario
-   * Actualiza los datos en localStorage y muestra un mensaje de confirmación
-   * @method guardarCambios
-   * @returns {void}
-   */
-  guardarCambios() {
-    const index = this.usuarios.findIndex((u) => u.usuario === this.sesion.usuario);
-    if (index !== -1) {
-      this.usuarios[index] = { ...this.sesion };
-      localStorage.setItem('usuarios', JSON.stringify(this.usuarios));
-      this.mensaje = '✅ Cambios guardados correctamente.';
+  private getAuthHeaders(): HttpHeaders {
+    const token = localStorage.getItem('accessToken');
+
+    if (!token) {
+      console.error('Token de autenticación no encontrado.');
+      return new HttpHeaders();
     }
+
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    });
+  }
+
+  guardarCambios() {
+    this.mensaje = '';
+
+    const userId = this.sesion?.userId;
+    if (!userId) {
+      this.mensaje = '❌ Error: ID de usuario no encontrado.';
+      return;
+    }
+
+    const updateBody = {
+      nombre: this.sesion.nombre,
+      apellido: this.sesion.apellido,
+      userName: this.sesion.usuario,
+      email: this.sesion.email,
+    };
+
+    const url = `${this.API_BASE_URL}/${userId}`;
+    const headers = this.getAuthHeaders();
+
+    this.http.put(url, updateBody, { headers }).subscribe({
+      next: (response) => {
+        console.log('Usuario actualizado:', response);
+        localStorage.setItem('sesion', JSON.stringify(this.sesion));
+        this.mensaje = 'Cambios guardados correctamente.';
+      },
+      error: (err) => {
+        console.error('Error al actualizar perfil:', err);
+        this.mensaje = `Error al guardar: ${err.statusText || 'Verifique la conexión.'}`;
+      },
+    });
   }
 }

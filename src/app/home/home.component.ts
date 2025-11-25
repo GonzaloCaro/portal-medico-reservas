@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AuthService } from '../services/auth.service';
 
 /**
  * Componente principal de la página de inicio
@@ -36,6 +37,16 @@ export class HomeComponent {
    */
   constructor() {
     // Constructor vacío reservado para futuras inyecciones de dependencias
+  }
+
+  getSesion(): any {
+    const sesion = localStorage.getItem('sesion');
+    return sesion ? JSON.parse(sesion) : null;
+  }
+
+  estaLogueado(): boolean {
+    const sesion = this.getSesion();
+    return sesion?.logueado || false;
   }
 
   // Nota: El componente actualmente actúa principalmente como contenedor/wrapper

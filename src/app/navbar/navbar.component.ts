@@ -2,19 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
-/**
- * Componente de barra de navegación principal
- *
- * Muestra diferentes opciones según el estado de autenticación y rol del usuario.
- * Responsable de:
- * - Mostrar/ocultar elementos según sesión
- * - Manejar el cierre de sesión
- * - Redirigir al usuario según sus permisos
- *
- * @example
- * <!-- Uso básico -->
- * <app-navbar></app-navbar>
- */
 @Component({
   standalone: false,
   selector: 'app-navbar',
@@ -22,17 +9,7 @@ import { AuthService } from '../services/auth.service';
   styleUrls: ['./navbar.component.css'],
 })
 export class NavbarComponent implements OnInit {
-  /**
-   * Datos de la sesión actual del usuario
-   * @type {any}
-   */
   sesion: any = null;
-
-  /**
-   * Lista de usuarios registrados (solo para uso interno)
-   * @type {any}
-   * @private
-   */
   usuarios: any;
 
   /**
@@ -42,23 +19,14 @@ export class NavbarComponent implements OnInit {
    */
   constructor(private auth: AuthService, private router: Router) {}
 
-  /**
-   * Inicializa el componente y suscribe a cambios de sesión
-   */
   ngOnInit(): void {
     this.subscribeToSessionChanges();
     this.loadUsers();
   }
 
-  /**
-   * Suscribe a cambios en el estado de autenticación
-   * @private
-   */
   private subscribeToSessionChanges(): void {
     this.auth.sesion$.subscribe((sesion) => {
       this.sesion = sesion;
-      // Debug: Verificar tipo de usuario en consola
-      console.log('Usuario es admin:', sesion?.tipo !== 'usuario');
     });
   }
 
@@ -101,7 +69,6 @@ export class NavbarComponent implements OnInit {
    * Cierra la sesión actual y redirige al inicio
    */
   cerrarSesion(): void {
-    console.log('🔴 Cerrando sesión...');
     this.auth.cerrarSesion();
     this.router.navigate(['/']);
   }

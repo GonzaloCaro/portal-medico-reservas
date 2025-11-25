@@ -1,0 +1,163 @@
+<main class="container mt-5">
+  <div class="auth-container">
+    <div class="auth-card">
+      <div class="title-login">
+        <img src="../../favicon.ico" class="icon-login" alt="Logo" width="100" />
+        <h1 class="mb-2 text-center">Registro de Usuario</h1>
+      </div>
+      <form [formGroup]="registerForm" (ngSubmit)="registrar()" novalidate class="form-container">
+        <div class="inputs-container">
+          <div class="form-group">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input
+              id="nombre"
+              type="text"
+              formControlName="nombre"
+              class="form-control input"
+              placeholder="Tu nombre"
+            />
+            <div class="text-danger" *ngIf="f['nombre'].invalid && f['nombre'].touched">
+              Nombre es obligatorio.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="apellido" class="form-label">Apellido</label>
+            <input
+              id="apellido"
+              type="text"
+              formControlName="apellido"
+              class="form-control input"
+              placeholder="Tu apellido"
+            />
+            <div class="text-danger" *ngIf="f['apellido'].invalid && f['apellido'].touched">
+              Apellido es obligatorio.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="usuario" class="form-label">Usuario</label>
+            <input
+              id="usuario"
+              type="text"
+              formControlName="usuario"
+              class="form-control input"
+              placeholder="Nombre de usuario"
+            />
+            <div class="text-danger" *ngIf="f['usuario'].invalid && f['usuario'].touched">
+              Usuario es obligatorio y debe tener al menos 4 caracteres.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="email" class="form-label">Correo electrónico</label>
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              class="form-control input input"
+              placeholder="ejemplo@email.com"
+            />
+            <div class="text-danger" *ngIf="f['email'].invalid && f['email'].touched">
+              Ingresa un email válido.
+            </div>
+          </div>
+        </div>
+        <div class="inputs-container2">
+          <div class="form-group">
+            <label for="fechaNacimiento" class="form-label">Fecha de nacimiento</label>
+            <input
+              id="fechaNacimiento"
+              type="date"
+              formControlName="fechaNacimiento"
+              class="form-control input"
+            />
+            <div
+              class="text-danger"
+              *ngIf="f['fechaNacimiento'].errors?.['edadMinima'] && f['fechaNacimiento'].touched"
+            >
+              Debes tener al menos 14 años.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="password" class="form-label">Contraseña</label>
+            <input
+              id="password"
+              type="password"
+              formControlName="password"
+              class="form-control input"
+              placeholder="••••••"
+            />
+            <div class="text-danger" *ngIf="f['password'].invalid && f['password'].touched">
+              La contraseña debe tener al menos 4 caracteres.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="password2" class="form-label">Repite la contraseña</label>
+            <input
+              id="password2"
+              type="password"
+              formControlName="password2"
+              class="form-control input"
+              placeholder="••••••"
+            />
+            <div
+              class="text-danger"
+              *ngIf="registerForm.errors?.['contrasenasNoCoinciden'] && f['password2'].touched"
+            >
+              Las contraseñas no coinciden.
+            </div>
+          </div>
+        </div>
+        <div class="inputs-container3">
+          <div class="form-group">
+            <label for="areaId" class="form-label">Área de Trabajo</label>
+            <select id="areaId" formControlName="areaId" class="form-control input">
+              <option [ngValue]="''" disabled>Selecciona un área</option>
+              <option *ngFor="let area of areas" [value]="area.id">
+                {{ area.nombre }}
+              </option>
+            </select>
+            <div class="text-danger" *ngIf="f['areaId'].invalid && f['areaId'].touched">
+              Seleccionar área es obligatorio.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="roleId" class="form-label">Rol del Usuario</label>
+            <select id="roleId" formControlName="roleId" class="form-control input">
+              <option value="" disabled>Selecciona un rol</option>
+              <option *ngFor="let role of roles" [value]="role.id">
+                {{ role.nombre }}
+              </option>
+            </select>
+            <div class="text-danger" *ngIf="f['roleId'].invalid && f['roleId'].touched">
+              Seleccionar rol es obligatorio.
+            </div>
+          </div>
+        </div>
+        <div class="button">
+          <button type="submit" class="btn btn-register px-4">Registrarse</button>
+        </div>
+
+        <div class="col-12 text-center">
+          <div *ngIf="error" class="alert alert-danger mt-3">{{ error }}</div>
+          <div *ngIf="exito" class="alert alert-success mt-3">{{ exito }}</div>
+        </div>
+        <form
+          *ngIf="!loadingData"
+          [formGroup]="registerForm"
+          (ngSubmit)="registrar()"
+          novalidate
+          class="form-container"
+        ></form>
+
+        <div *ngIf="loadingData" class="alert alert-info text-center mt-3">
+          Cargando datos iniciales...
+        </div>
+      </form>
+    </div>
+  </div>
+</main>

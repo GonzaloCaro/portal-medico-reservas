@@ -12,17 +12,17 @@
       novalidate
     >
       <div class="form-group">
-        <label for="email">Correo electrónico</label>
+        <label for="user_name">Nombre de Usuario</label>
         <input
-          type="email"
-          class="form-control input email"
-          id="email"
+          type="text"
+          class="form-control input user_name"
+          id="user_name"
           required
-          formControlName="email"
-          [class.is-invalid]="f['email'].invalid && f['email'].touched"
+          formControlName="user_name"
+          [class.is-invalid]="f['user_name'].invalid && f['user_name'].touched"
         />
-        <div class="invalid-feedback" id="emailError">
-          Por favor ingrese un correo válido
+        <div class="invalid-feedback" id="userNameError">
+          Por favor ingrese un nombre de usuario válido
         </div>
       </div>
 
@@ -41,6 +41,7 @@
             <button
               class="btn btn-outline-secondary toggle-password"
               type="button"
+              (click)="togglePasswordVisibility()"  
             >
               <i class="bi bi-eye"></i>
             </button>

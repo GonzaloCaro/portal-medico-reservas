@@ -1,22 +1,41 @@
 .perfil.container {
   padding-top: 2rem;
-  color: white;
+  color: var(--color-principal);
 }
 
 .avatar-container {
   display: flex;
-  align-items: center;
+  align-items: center; /* Alinear arriba en la columna */
   justify-content: center;
 }
 .profile-card {
   border-radius: 16px;
-  background-color: var(--dark-green);
-  color: white;
+  /* Fondo blanco o claro para limpieza */
+  background-color: var(--fondo-tarjeta);
+  color: var(--color-principal); /* Texto oscuro */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); /* Sombra ligera profesional */
+  width: 100%;
 }
-
+.profile-card .card-body i {
+  /* Icono de avatar grande y con color de acento */
+  font-size: 4rem;
+  color: var(--color-principal);
+  margin-bottom: 0.5rem;
+}
 .btn-change-photo {
   border-radius: 24px;
+  /* Botón secundario: sin riesgo, usa color claro o borde principal */
+  border: 1px solid var(--color-principal);
+  color: var(--color-principal);
+  background-color: transparent;
+  padding: 5px 15px;
+  transition: all 0.2s;
 }
+.btn-change-photo:hover {
+  background-color: var(--color-principal);
+  color: var(--fondo-tarjeta);
+}
+
 .card-header {
   background-color: var(--dark-green);
   border-radius: 16px 16px 0 0;
@@ -24,11 +43,21 @@
   text-align: center;
 }
 
+.profile-form .card-header {
+  background-color: var(--color-principal);
+  color: var(--fondo-tarjeta);
+  border-radius: 16px 16px 0 0;
+  padding: 15px;
+  text-align: left;
+  font-weight: 600;
+}
+
 .profile-form .card {
-  background-color: var(--dark-green);
-  color: white;
+  background-color: var(--fondo-tarjeta);
+  color: var(--color-principal);
   border-radius: 0 0 16px 16px;
-  padding: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  padding: 20px;
 }
 .form-container {
   display: grid;
@@ -36,8 +65,8 @@
   grid-template-rows: auto auto;
   gap: 0px 10px;
   grid-template-areas:
-    "inputs-container inputs-container2"
-    "button button";
+    'inputs-container inputs-container2'
+    'button button';
   height: fit-content;
 }
 
@@ -73,5 +102,46 @@
   padding-bottom: 1rem;
 }
 .form-control {
-  border-radius: 24px;
+  border-radius: 8px;
+  border-color: var(--color-texto-ligero);
+  padding: 10px 15px;
+}
+.form-group label {
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+  display: block;
+}
+
+.button {
+  grid-area: button;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 15px;
+}
+
+.btn-guardar-cambios {
+  width: 50%;
+  max-width: 300px;
+  border-radius: 8px;
+
+  background-color: var(--color-acento);
+  color: var(--fondo-tarjeta);
+  border: 2px solid var(--color-acento);
+  font-weight: 600;
+  padding: 10px 20px;
+  transition: all 0.2s;
+}
+
+.btn-guardar-cambios:hover {
+  background-color: #008f80;
+  border-color: #008f80;
+  color: var(--fondo-tarjeta);
+}
+
+.text-success {
+  color: var(--color-acento) !important;
+  font-size: 1rem;
+  font-weight: 500;
 }

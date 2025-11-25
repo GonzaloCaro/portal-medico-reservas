@@ -18,13 +18,13 @@
       <div class="card form-container">
         <div class="inputs-container">
           <div class="form-group">
-            <label for="editName">Nombre Completo</label>
+            <label for="editName">Nombre</label>
             <input [(ngModel)]="sesion.nombre" type="text" class="form-control input" />
           </div>
 
           <div class="form-group input">
             <label for="editName">Nombre Usuario</label>
-            <input [(ngModel)]="sesion.usuario" type="text" class="form-control" />
+            <input [(ngModel)]="sesion.userName" type="text" class="form-control" />
           </div>
 
           <div class="form-group">
@@ -34,12 +34,12 @@
         </div>
         <div class="inputs-container2">
           <div class="form-group">
-            <label for="currentPassword">Contraseña Actual</label>
-            <input [(ngModel)]="sesion.password" type="password" class="form-control" />
+            <label for="editApellido">Apellido</label>
+            <input [(ngModel)]="sesion.apellido" type="text" class="form-control input" />
           </div>
 
           <div class="form-group">
-            <label for="currentPassword">Tipo de Usuario</label>
+            <label for="tipoUsuario">Tipo de Usuario</label>
             <input [value]="sesion.tipo" class="form-control" disabled />
           </div>
         </div>

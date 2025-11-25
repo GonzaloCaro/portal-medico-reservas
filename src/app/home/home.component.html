@@ -2,16 +2,34 @@
   <section class="text-center">
     <h1 class="mb-3">Bienvenido Portal Medico Reservas</h1>
   </section>
-  <div class="bg-red-500 h-full">
-    <span>
-      asjdajsdj
-    </span>
+  <div *ngIf="!estaLogueado()" class="h-[81dvh] flex flex-col items-center justify-center">
+    <h1>Inicie sesión para ver sus reservas</h1>
+    <div class="mt-4">
+      <button
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        onclick="window.location.href='/login'"
+      >
+        Iniciar Sesión
+      </button>
+    </div>
+  </div>
+  <div>
+    <div *ngIf="estaLogueado()" class="h-[81dvh] flex flex-col items-center justify-center">
+      <div class="mb-4">
+        <h2 class="text-2xl font-bold mb-2">Tus Reservas</h2>
+        <p class="text-gray-700">Aquí puedes ver y gestionar tus reservas médicas.</p>
+      </div>
+      <div class="w-full max-w-4xl">
+        <!-- Aquí iría el componente o la lógica para mostrar las reservas del usuario -->
+        <app-reservas></app-reservas>
+      </div>
+    </div>
   </div>
   <button
     class="fixed bottom-2 right-7 h-12"
     placement="left"
     ngbTooltip="Volver arriba"
-    onclick="window.location.href='#navbar'"
+    onclick="window.location.href='/'"
   >
     <i class="bi-arrow-up-short hover:bg-black rounded-full hover:text-white"></i>
   </button>
