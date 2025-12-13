@@ -5,6 +5,8 @@ import { environment } from '../../enviroments/enviroment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ILaboratorio } from '../services/interfaces/laboratorio.interface';
 
+type ModalMode = 'view' | 'edit' | 'delete';
+
 @Component({
   standalone: false,
   selector: 'app-laboratorios',
@@ -16,6 +18,9 @@ export class LaboratoriosComponent implements OnInit {
 
   loadingData: boolean = true;
   laboratorios: ILaboratorio[] = [];
+  isModalOpen = false;
+  modalMode: ModalMode | null = null;
+  selectedLaboratorio: any = null;
 
   constructor(
     private fb: FormBuilder,
@@ -56,5 +61,40 @@ export class LaboratoriosComponent implements OnInit {
       console.error('Error en la solicitud HTTP:', error);
     }
     return this.laboratorios;
+  }
+
+  openModal(mode: ModalMode, laboratorio: any) {
+    this.modalMode = mode;
+    this.selectedLaboratorio = laboratorio;
+    this.isModalOpen = true;
+  }
+  closeModal() {
+    this.isModalOpen = false;
+    this.modalMode = null;
+    this.selectedLaboratorio = null;
+  }
+  confirmAction() {
+    if (!this.selectedLaboratorio) return;
+
+    switch (this.modalMode) {
+      case 'delete':
+        this.deleteLaboratorio(this.selectedLaboratorio.id);
+        break;
+
+      case 'edit':
+        this.updateLaboratorio();
+        break;
+    }
+
+    this.closeModal();
+  }
+
+  /* Ejemplos */
+  deleteLaboratorio(id: string) {
+    console.log('Eliminar laboratorio', id);
+  }
+
+  updateLaboratorio() {
+    console.log('Editar laboratorio', this.selectedLaboratorio);
   }
 }

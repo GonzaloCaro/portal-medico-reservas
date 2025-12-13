@@ -8,12 +8,26 @@
           <tr>
             <th>Nombre</th>
             <th>Ubicación</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let laboratorio of laboratorios">
             <td>{{ laboratorio.nombre }}</td>
             <td>{{ laboratorio.ubicacion }}</td>
+            <td class="flex justify-end gap-2">
+              <button class="btn btn-sm btn-primary" (click)="openModal('view', laboratorio)">
+                Ver Detalles
+              </button>
+
+              <button class="btn btn-sm btn-warning" (click)="openModal('edit', laboratorio)">
+                Editar
+              </button>
+
+              <button class="btn btn-sm btn-danger" (click)="openModal('delete', laboratorio)">
+                Eliminar
+              </button>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -29,4 +43,45 @@
       </div>
     </div>
   </div>
+  <app-modal
+    [isOpen]="isModalOpen"
+    [title]="
+      modalMode === 'view'
+        ? 'Detalles del laboratorio'
+        : modalMode === 'edit'
+        ? 'Editar laboratorio'
+        : 'Eliminar laboratorio'
+    "
+    [showFooter]="modalMode !== 'view'"
+    (close)="closeModal()"
+    (confirm)="confirmAction()"
+  >
+    <!-- VER DETALLES -->
+    <div *ngIf="modalMode === 'view'">
+      <p><strong>Nombre:</strong> {{ selectedLaboratorio?.nombre }}</p>
+      <p><strong>Ubicación:</strong> {{ selectedLaboratorio?.ubicacion }}</p>
+    </div>
+
+    <!-- EDITAR -->
+    <div *ngIf="modalMode === 'edit'">
+      <div class="mb-3">
+        <label>Nombre</label>
+        <input class="form-control" [(ngModel)]="selectedLaboratorio.nombre" />
+      </div>
+
+      <div class="mb-3">
+        <label>Ubicación</label>
+        <input class="form-control" [(ngModel)]="selectedLaboratorio.ubicacion" />
+      </div>
+    </div>
+
+    <!-- ELIMINAR -->
+    <div *ngIf="modalMode === 'delete'">
+      <p>
+        ¿Estás seguro que deseas eliminar el laboratorio
+        <strong>{{ selectedLaboratorio?.nombre }}</strong
+        >?
+      </p>
+    </div>
+  </app-modal>
 </div>

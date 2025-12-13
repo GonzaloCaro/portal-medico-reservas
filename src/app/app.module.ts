@@ -18,6 +18,7 @@ import { PacientesComponent } from './pacientes/pacientes.component';
 import { CommonModule } from '@angular/common';
 import { LaboratoriosComponent } from './laboratorios/laboratorios.component';
 import { FormReservasComponent } from './reservas/form_reservas/form_reservas.component';
+import { Modal } from './shared/modal/modal';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { FormReservasComponent } from './reservas/form_reservas/form_reservas.co
     FormReservasComponent,
     PacientesComponent,
     LaboratoriosComponent,
+    Modal,
   ],
   imports: [
     CommonModule,
