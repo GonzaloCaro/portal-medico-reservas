@@ -1,0 +1,110 @@
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header bg-primary text-white">
+      <h3>Nueva Asignación de Laboratorio</h3>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="reserfaForm" (ngSubmit)="onSubmit()">
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label">Laboratorio</label>
+            <select class="form-select" formControlName="laboratorioId">
+              <option value="">Seleccione...</option>
+              <option *ngFor="let lab of laboratorios" [value]="lab.id">{{ lab.nombre }}</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Análisis</label>
+            <select class="form-select" formControlName="analisisId">
+              <option value="">Seleccione...</option>
+              <option *ngFor="let ana of analisis" [value]="ana.id">{{ ana.nombre }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label">Fecha Asignación</label>
+            <input type="datetime-local" class="form-control" formControlName="fechaAsignacion" />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Detalle / Observación</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="detalle"
+              placeholder="Ej: Ayuno 8hrs"
+            />
+          </div>
+        </div>
+
+        <hr />
+
+        <h5 class="mb-3">Datos del Paciente</h5>
+
+        <div class="form-check mb-3">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            formControlName="crearNuevoPaciente"
+            id="checkNuevo"
+          />
+          <label class="form-check-label" for="checkNuevo">
+            El paciente no existe (Registrar nuevo)
+          </label>
+        </div>
+
+        <div class="mb-3" *ngIf="!esNuevoPaciente">
+          <label class="form-label">Buscar Paciente Registrado</label>
+          <select class="form-select" formControlName="pacienteId">
+            <option value="">Seleccione un paciente...</option>
+            <option *ngFor="let pac of pacientes" [value]="pac.id">
+              {{ pac.rut }}-{{ pac.dv }} | {{ pac.nombrePaciente }} {{ pac.apellidoPaciente }}
+            </option>
+          </select>
+        </div>
+
+        <div *ngIf="esNuevoPaciente" class="p-3 border rounded bg-light">
+          <div class="row mb-2">
+            <div class="col-md-3">
+              <label>RUT</label>
+              <input type="text" maxlength="9" class="form-control" formControlName="rut" />
+            </div>
+            <div class="col-md-1">
+              <label>DV</label>
+              <input type="text" class="form-control" formControlName="dv" />
+            </div>
+            <div class="col-md-2">
+              <label>Edad</label>
+              <input type="number" class="form-control" formControlName="edad" />
+            </div>
+            <div class="col-md-6">
+              <label>Teléfono</label>
+              <input type="text" class="form-control" formControlName="telefono" />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <label>Nombres</label>
+              <input type="text" class="form-control" formControlName="nombrePaciente" />
+            </div>
+            <div class="col-md-6">
+              <label>Apellidos</label>
+              <input type="text" class="form-control" formControlName="apellidoPaciente" />
+            </div>
+          </div>
+        </div>
+
+        <div class="d-grid gap-2 mt-4">
+          <button
+            type="submit"
+            class="btn btn-success btn-lg"
+            [disabled]="reserfaForm.invalid || loadingData"
+          >
+            {{ loadingData ? 'Guardando...' : 'Crear Asignación' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

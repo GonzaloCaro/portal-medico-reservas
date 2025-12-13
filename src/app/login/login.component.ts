@@ -92,7 +92,7 @@ export class LoginComponent implements OnInit {
     );
 
     const userType = response.roleNombre;
-    const redirectUrl = userType === 'admin' ? '/admin' : '/perfil';
+    const redirectUrl = '/';
     this.router.navigate([redirectUrl]);
   }
 

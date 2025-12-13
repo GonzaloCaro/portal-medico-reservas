@@ -1,0 +1,30 @@
+.pacientes.container {
+  margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+  .pacientes.container {
+    margin-top: 20px;
+    padding: 1rem;
+    width: 100%;
+  }
+
+  /* .table-pacientes {
+    max-height: 400px;
+    display: block;
+    overflow: scroll;
+  } */
+}
+
+@media (max-width: 440px) {
+  .pacientes.container {
+    padding: 1rem;
+    width: 100%;
+  }
+
+  .table-pacientes {
+    max-height: 400px;
+    display: block;
+    overflow: auto;
+  }
+}

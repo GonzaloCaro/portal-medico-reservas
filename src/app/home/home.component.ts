@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../services/auth.service';
+import { environment } from '../../enviroments/enviroment';
 
 /**
  * Componente principal de la página de inicio
@@ -28,13 +29,6 @@ import { AuthService } from '../services/auth.service';
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent {
-  /**
-   * Constructor del componente Home
-   *
-   * @remarks
-   * Actualmente no realiza ninguna inyección de dependencias ni inicialización especial.
-   * Se mantiene como punto de extensión para futuras funcionalidades.
-   */
   constructor() {
     // Constructor vacío reservado para futuras inyecciones de dependencias
   }

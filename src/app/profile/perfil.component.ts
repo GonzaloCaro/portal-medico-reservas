@@ -3,12 +3,6 @@ import { environment } from '../../enviroments/enviroment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../services/auth.service';
 
-/**
- * Componente para mostrar y gestionar el perfil de usuario
- * @selector app-perfil
- * @templateUrl ./perfil.component.html
- * @styleUrls ['./perfil.component.css']
- */
 @Component({
   standalone: false,
   selector: 'app-perfil',

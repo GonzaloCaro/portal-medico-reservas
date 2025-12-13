@@ -1,0 +1,38 @@
+<div class="pacientes container">
+  <div class="row">
+    <div class="col-12">
+      <h2 class="mb-4">Lista de Pacientes</h2>
+
+      <table class="table table-striped table-pacientes custom-scrollbar" *ngIf="pacientes.length > 0">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Edad</th>
+            <th>RUT</th>
+            <th>Teléfono</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let paciente of pacientes">
+            <td>{{ paciente.nombrePaciente }}</td>
+            <td>{{ paciente.apellidoPaciente }}</td>
+            <td>{{ paciente.edad }}</td>
+            <td>{{ paciente.rut }}-{{ paciente.dv }}</td>
+            <td>{{ paciente.telefono }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div *ngIf="!loadingData && pacientes.length === 0">
+        <div class="alert alert-info text-center mt-3">
+          No se encontraron pacientes para mostrar.
+        </div>
+      </div>
+
+      <div *ngIf="loadingData" class="alert alert-info text-center mt-3">
+        Cargando datos iniciales...
+      </div>
+    </div>
+  </div>
+</div>

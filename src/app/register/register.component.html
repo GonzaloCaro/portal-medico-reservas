@@ -5,7 +5,13 @@
         <img src="../../favicon.ico" class="icon-login" alt="Logo" width="100" />
         <h1 class="mb-2 text-center">Registro de Usuario</h1>
       </div>
-      <form [formGroup]="registerForm" (ngSubmit)="registrar()" novalidate class="form-container">
+      <form
+        *ngIf="registerForm && !loadingData"
+        [formGroup]="registerForm"
+        (ngSubmit)="registrar()"
+        novalidate
+        class="form-container"
+      >
         <div class="inputs-container">
           <div class="form-group">
             <label for="nombre" class="form-label">Nombre</label>
@@ -147,7 +153,7 @@
           <div *ngIf="exito" class="alert alert-success mt-3">{{ exito }}</div>
         </div>
         <form
-          *ngIf="!loadingData"
+          *ngIf="registerForm && !loadingData"
           [formGroup]="registerForm"
           (ngSubmit)="registrar()"
           novalidate

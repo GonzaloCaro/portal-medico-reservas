@@ -14,6 +14,10 @@ import { PerfilComponent } from './profile/perfil.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ReservasComponent } from './reservas/reservas.component';
 import { HomeComponent } from './home/home.component';
+import { PacientesComponent } from './pacientes/pacientes.component';
+import { CommonModule } from '@angular/common';
+import { LaboratoriosComponent } from './laboratorios/laboratorios.component';
+import { FormReservasComponent } from './reservas/form_reservas/form_reservas.component';
 
 @NgModule({
   declarations: [
@@ -25,8 +29,12 @@ import { HomeComponent } from './home/home.component';
     PerfilComponent,
     HomeComponent,
     ReservasComponent,
+    FormReservasComponent,
+    PacientesComponent,
+    LaboratoriosComponent,
   ],
   imports: [
+    CommonModule,
     HttpClientModule,
     BrowserModule,
     AppRoutingModule,

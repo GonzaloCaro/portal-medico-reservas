@@ -1,23 +1,38 @@
 <nav class="navbar navbar-expand-lg header-container">
   <div class="header-content">
-    <div *ngIf="estaLogueado()" ngbDropdown class="d-inline-block navigation-dropdown">
-      <button type="button" class="btn-navegation" ngbDropdownToggle id="dropdownNav">
-        <i class="bi bi-list icon-header"></i>
-      </button>
-
-      <div ngbDropdownMenu aria-labelledby="dropdownNav">
-        <a class="dropdown-item" routerLink="/">Inicio</a>
-        <a class="dropdown-item" routerLink="/pacientes">Pacientes</a>
-        <a class="dropdown-item" routerLink="/analisis">Análisis</a>
-        <a class="dropdown-item" routerLink="/laboratorios">Laboratorios</a>
-      </div>
-    </div>
-
     <a class="navbar-brand app-title" routerLink="/"> Portal Médico </a>
   </div>
 
   <div class="user-actions">
-    <div ngbDropdown display="dynamic" class="custom-dropdown">
+    <div ngbDropdown display="dynamic" class="flex navigation-dropdown">
+      <button
+        type="button"
+        class="btn-navegation flex items-center"
+        ngbDropdownToggle
+        id="dropdownNav"
+      >
+        <div *ngIf="estaLogueado()" class="flex align-items-center mx-2">
+          <i class="bi bi-person-circle icon-user"></i>
+          <label class="label-user" id="userNameLabel">{{ sesion?.userName }}</label>
+        </div>
+        <i class="bi bi-list icon-header"></i>
+      </button>
+      <div ngbDropdownMenu aria-labelledby="dropdownNav">
+        <a *ngIf="estaLogueado()" class="dropdown-item" routerLink="/">Inicio</a>
+        <a *ngIf="estaLogueado()" class="dropdown-item" routerLink="/pacientes">Pacientes</a>
+        <!-- <a *ngIf="estaLogueado()" class="dropdown-item" routerLink="/analisis">Análisis</a> -->
+        <a *ngIf="estaLogueado()" class="dropdown-item" routerLink="/reservas">Reservas</a>
+        <a *ngIf="estaLogueado()" class="dropdown-item" routerLink="/laboratorios">Laboratorios</a>
+        <a *ngIf="estaLogueado()" class="dropdown-item" routerLink="/perfil">Mi Perfil</a>
+
+        <a *ngIf="!estaLogueado()" class="dropdown-item" routerLink="/login">Iniciar sesión</a>
+        <a *ngIf="!estaLogueado()" class="dropdown-item" routerLink="/registro">Registro</a>
+        <button *ngIf="estaLogueado()" class="dropdown-item" type="button" (click)="cerrarSesion()">
+          Cerrar sesión
+        </button>
+      </div>
+    </div>
+    <!-- <div ngbDropdown display="dynamic" class="custom-dropdown">
       <button
         type="button"
         class="btn-profile dropdown-toggle"
@@ -37,6 +52,6 @@
           Cerrar sesión
         </button>
       </div>
-    </div>
+    </div> -->
   </div>
 </nav>

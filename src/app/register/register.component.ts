@@ -22,7 +22,7 @@ interface Option {
   styleUrls: ['./register.component.css'],
 })
 export class RegisterComponent implements OnInit {
-  registerForm!: FormGroup;
+  registerForm: FormGroup | null = null;
   error: string = '';
   exito: string = '';
 
@@ -77,9 +77,9 @@ export class RegisterComponent implements OnInit {
         apellido: ['', Validators.required],
         usuario: ['', [Validators.required, Validators.minLength(4)]],
         email: ['', [Validators.required, Validators.email]],
+        fechaNacimiento: ['', [Validators.required, this.edadMinimaValidator]],
         password: ['', [Validators.required, Validators.minLength(4)]],
         password2: ['', Validators.required],
-
         areaId: ['', Validators.required],
         roleId: ['', Validators.required],
       },
@@ -109,13 +109,13 @@ export class RegisterComponent implements OnInit {
     this.error = '';
     this.exito = '';
 
-    if (this.registerForm.invalid) {
+    if (this.registerForm?.invalid) {
       this.registerForm.markAllAsTouched();
       this.error = 'Revisa los campos, hay errores en el formulario.';
       return;
     }
 
-    const formValues = this.registerForm.value;
+    const formValues = this.registerForm?.value ? this.registerForm.value : {};
 
     const payload = {
       nombre: formValues.nombre,
@@ -140,7 +140,7 @@ export class RegisterComponent implements OnInit {
     });
   }
 
-  get f() {
-    return this.registerForm.controls;
+  get f(): { [key: string]: AbstractControl } {
+    return (this.registerForm as FormGroup).controls;
   }
 }

@@ -1,21 +1,7 @@
-<main class="max-w-full! bg-[#8a9869] p-4">
-  <section class="text-center">
-    <h1 class="mb-3">Bienvenido Portal Medico Reservas</h1>
-  </section>
-  <div *ngIf="!estaLogueado()" class="h-[81dvh] flex flex-col items-center justify-center">
-    <h1>Inicie sesión para ver sus reservas</h1>
-    <div class="mt-4">
-      <button
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        onclick="window.location.href='/login'"
-      >
-        Iniciar Sesión
-      </button>
-    </div>
-  </div>
+<main class="max-w-full! bg-[#8a9869] p-4 h-full min-h-[calc(90vh-130px)]">
   <div>
-    <div *ngIf="estaLogueado()" class="h-[81dvh] flex flex-col items-center justify-center">
-      <div class="mb-4">
+    <div *ngIf="estaLogueado()" class="flex flex-col items-center justify-center">
+      <div class="mb-4 flex flex-col self-start">
         <h2 class="text-2xl font-bold mb-2">Tus Reservas</h2>
         <p class="text-gray-700">Aquí puedes ver y gestionar tus reservas médicas.</p>
       </div>
@@ -33,6 +19,17 @@
   >
     <i class="bi-arrow-up-short hover:bg-black rounded-full hover:text-white"></i>
   </button>
+  <div *ngIf="!estaLogueado()" class="flex flex-col items-center justify-center">
+    <h1>Inicie sesión para ver sus reservas</h1>
+    <div class="mt-4">
+      <button
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        onclick="window.location.href='/login'"
+      >
+        Iniciar Sesión
+      </button>
+    </div>
+  </div>
 </main>
 
 <footer class="bg-dark text-white text-center py-3">

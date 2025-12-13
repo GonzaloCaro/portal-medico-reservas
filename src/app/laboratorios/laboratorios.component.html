@@ -1,0 +1,32 @@
+<div class="pacientes container">
+  <div class="row">
+    <div class="col-12">
+      <h2 class="mb-4">Lista de Laboratorios</h2>
+
+      <table class="table table-striped" *ngIf="laboratorios.length > 0">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Ubicación</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let laboratorio of laboratorios">
+            <td>{{ laboratorio.nombre }}</td>
+            <td>{{ laboratorio.ubicacion }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div *ngIf="!loadingData && laboratorios.length === 0">
+        <div class="alert alert-info text-center mt-3">
+          No se encontraron laboratorios para mostrar.
+        </div>
+      </div>
+
+      <div *ngIf="loadingData" class="alert alert-info text-center mt-3">
+        Cargando datos iniciales...
+      </div>
+    </div>
+  </div>
+</div>
