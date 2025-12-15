@@ -1,11 +1,9 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
 import { environment } from '../../enviroments/enviroment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ILaboratorio } from '../services/interfaces/laboratorio.interface';
 
-type ModalMode = 'view' | 'edit' | 'delete';
+export type ModalMode = 'view' | 'edit' | 'delete';
 
 @Component({
   standalone: false,
@@ -22,12 +20,7 @@ export class LaboratoriosComponent implements OnInit {
   modalMode: ModalMode | null = null;
   selectedLaboratorio: any = null;
 
-  constructor(
-    private fb: FormBuilder,
-    private router: Router,
-    private http: HttpClient,
-    private cdr: ChangeDetectorRef
-  ) {}
+  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
 
   async ngOnInit(): Promise<void> {
     this.loadingData = true;
@@ -63,7 +56,7 @@ export class LaboratoriosComponent implements OnInit {
     return this.laboratorios;
   }
 
-  openModal(mode: ModalMode, laboratorio: any) {
+  openModal(mode: ModalMode, laboratorio: ILaboratorio) {
     this.modalMode = mode;
     this.selectedLaboratorio = laboratorio;
     this.isModalOpen = true;

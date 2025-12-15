@@ -81,7 +81,8 @@ export class LoginComponent implements OnInit {
       'sesion',
       JSON.stringify({
         logueado: true,
-        tipo: response.roleNombre,
+        role: response.roleNombre,
+        area: response.areaNombre,
         userId: response.userId,
         userName: response.userName,
         nombre: response.nombre,

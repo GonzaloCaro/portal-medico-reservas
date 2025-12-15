@@ -1,5 +1,6 @@
 <nav class="navbar navbar-expand-lg header-container">
   <div class="header-content">
+    <i class="bi bi-file-earmark-medical icon-logo text-3xl text-white"></i>
     <a class="navbar-brand app-title" routerLink="/"> Portal Médico </a>
   </div>
 
@@ -18,40 +19,21 @@
         <i class="bi bi-list icon-header"></i>
       </button>
       <div ngbDropdownMenu aria-labelledby="dropdownNav">
-        <a *ngIf="estaLogueado()" class="dropdown-item" routerLink="/">Inicio</a>
-        <a *ngIf="estaLogueado()" class="dropdown-item" routerLink="/pacientes">Pacientes</a>
-        <!-- <a *ngIf="estaLogueado()" class="dropdown-item" routerLink="/analisis">Análisis</a> -->
-        <a *ngIf="estaLogueado()" class="dropdown-item" routerLink="/reservas">Reservas</a>
-        <a *ngIf="estaLogueado()" class="dropdown-item" routerLink="/laboratorios">Laboratorios</a>
-        <a *ngIf="estaLogueado()" class="dropdown-item" routerLink="/perfil">Mi Perfil</a>
+        <button
+          *ngFor="let option of filteredNavOptions"
+          class="dropdown-item"
+          type="button"
+          (click)="executeAction(option)"
+        >
+          <a *ngIf="option.route" [routerLink]="option.route" class="nav-link-item">
+            {{ option.label }}
+          </a>
 
-        <a *ngIf="!estaLogueado()" class="dropdown-item" routerLink="/login">Iniciar sesión</a>
-        <a *ngIf="!estaLogueado()" class="dropdown-item" routerLink="/registro">Registro</a>
-        <button *ngIf="estaLogueado()" class="dropdown-item" type="button" (click)="cerrarSesion()">
-          Cerrar sesión
+          <span *ngIf="!option.route">
+            {{ option.label }}
+          </span>
         </button>
       </div>
     </div>
-    <!-- <div ngbDropdown display="dynamic" class="custom-dropdown">
-      <button
-        type="button"
-        class="btn-profile dropdown-toggle"
-        ngbDropdownToggle
-        id="dropdownProfile"
-      >
-        <i class="bi bi-person-circle icon-user"></i>
-        <label class="label-user" id="userNameLabel">{{ sesion?.userName }}</label>
-      </button>
-
-      <div ngbDropdownMenu aria-labelledby="dropdownProfile">
-        <a *ngIf="!estaLogueado()" class="dropdown-item" routerLink="/login">Iniciar sesión</a>
-        <a *ngIf="!estaLogueado()" class="dropdown-item" routerLink="/registro">Registro</a>
-        <a *ngIf="estaLogueado()" class="dropdown-item" routerLink="/perfil">Mi Perfil</a>
-
-        <button *ngIf="estaLogueado()" class="dropdown-item" type="button" (click)="cerrarSesion()">
-          Cerrar sesión
-        </button>
-      </div>
-    </div> -->
   </div>
 </nav>

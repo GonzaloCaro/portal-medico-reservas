@@ -31,6 +31,7 @@
             <label class="form-label fw-bold">Email</label>
             <input [(ngModel)]="sesion.email" type="email" class="form-control" />
           </div>
+          
         </div>
         <div class="inputs-container2">
           <div class="form-group">
@@ -39,8 +40,13 @@
           </div>
 
           <div class="form-group">
-            <label for="tipoUsuario">Tipo de Usuario</label>
-            <input [value]="sesion.tipo" class="form-control" disabled />
+            <label for="tipoUsuario">Rol de Usuario</label>
+            <input [value]="sesion.role" class="form-control" disabled />
+          </div>
+
+          <div class="form-group">
+            <label for="tipoUsuario">Area</label>
+            <input [value]="sesion.area" class="form-control" disabled />
           </div>
         </div>
         <div class="button">
