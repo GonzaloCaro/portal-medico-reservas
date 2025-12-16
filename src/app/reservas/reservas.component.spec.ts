@@ -5,7 +5,6 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ChangeDetectorRef } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { environment } from '../../enviroments/enviroment';
-import { vi } from 'vitest';
 import { Router } from '@angular/router';
 
 describe('ReservasComponent', () => {
@@ -18,7 +17,7 @@ describe('ReservasComponent', () => {
   const UUID = '550e8400-e29b-41d4-a716-446655440000';
 
   beforeEach(async () => {
-    const cdrMock = { detectChanges: vi.fn() };
+    const cdrMock = { detectChanges: () => {} };
 
     await TestBed.configureTestingModule({
       declarations: [ReservasComponent],
@@ -45,7 +44,7 @@ describe('ReservasComponent', () => {
 
   // 🔹 Helper correcto
   function mockLocalStorage(sesion: any | null, token: string | null = null) {
-    vi.spyOn(localStorage, 'getItem').mockImplementation((key: string) => {
+    spyOn(localStorage, 'getItem').and.callFake((key: string) => {
       if (key === 'sesion') return sesion ? JSON.stringify(sesion) : null;
       if (key === 'accessToken') return token;
       return null;
@@ -57,29 +56,29 @@ describe('ReservasComponent', () => {
   });
 
   it('ngOnInit debe cargar reservas y cambiar loadingData', async () => {
-  localStorage.setItem('accessToken', 'token-test');
-  localStorage.setItem('sesion', JSON.stringify({ userId: UUID }));
+    localStorage.setItem('accessToken', 'token-test');
+    localStorage.setItem('sesion', JSON.stringify({ userId: UUID }));
 
-  const initPromise = component.ngOnInit();
+    const initPromise = component.ngOnInit();
 
-  const req = httpMock.expectOne(`${API_URL}/usuario/${UUID}`);
-  expect(req.request.method).toBe('GET');
-  req.flush([]);
+    const req = httpMock.expectOne(`${API_URL}/usuario/${UUID}`);
+    expect(req.request.method).toBe('GET');
+    req.flush([]);
 
-  await initPromise;
+    await initPromise;
 
-  expect(component.loadingData).toBe(false);
-  expect(component.reservas).toEqual([]);
-});
+    expect(component.loadingData).toBe(false);
+    expect(component.reservas).toEqual([]);
+  });
 
   it('getAuthHeaders debe retornar headers con token', () => {
-  localStorage.setItem('accessToken', 'token123');
+    localStorage.setItem('accessToken', 'token123');
 
-  const headers = (component as any).getAuthHeaders();
+    const headers = (component as any).getAuthHeaders();
 
-  expect(headers.get('Authorization')).toBe('Bearer token123');
-  expect(headers.get('Content-Type')).toBe('application/json');
-});
+    expect(headers.get('Authorization')).toBe('Bearer token123');
+    expect(headers.get('Content-Type')).toBe('application/json');
+  });
 
   it('getAuthHeaders debe retornar headers vacíos si no hay token', () => {
     mockLocalStorage(null, null);
@@ -99,35 +98,35 @@ describe('ReservasComponent', () => {
   });
 
   it('getReservasByUserId debe cargar reservas correctamente', async () => {
-  localStorage.setItem('accessToken', 'token-test');
-  localStorage.setItem('sesion', JSON.stringify({ userId: UUID }));
+    localStorage.setItem('accessToken', 'token-test');
+    localStorage.setItem('sesion', JSON.stringify({ userId: UUID }));
 
-  const reservasMock = [{ id: 1, nombre: 'Reserva test' }] as any;
+    const reservasMock = [{ id: 1, nombre: 'Reserva test' }] as any;
 
-  const promise = component.getReservasByUserId();
+    const promise = component.getReservasByUserId();
 
-  const req = httpMock.expectOne(`${API_URL}/usuario/${UUID}`);
-  expect(req.request.headers.get('Authorization')).toBe('Bearer token-test');
-  req.flush(reservasMock);
+    const req = httpMock.expectOne(`${API_URL}/usuario/${UUID}`);
+    expect(req.request.headers.get('Authorization')).toBe('Bearer token-test');
+    req.flush(reservasMock);
 
-  const result = await promise;
+    const result = await promise;
 
-  expect(result).toEqual(reservasMock);
-  expect(component.reservas).toEqual(reservasMock);
-});
+    expect(result).toEqual(reservasMock);
+    expect(component.reservas).toEqual(reservasMock);
+  });
 
   it('getReservasByUserId debe manejar error HTTP y dejar reservas vacías', async () => {
-  localStorage.setItem('accessToken', 'token-test');
-  localStorage.setItem('sesion', JSON.stringify({ userId: UUID }));
+    localStorage.setItem('accessToken', 'token-test');
+    localStorage.setItem('sesion', JSON.stringify({ userId: UUID }));
 
-  const promise = component.getReservasByUserId();
+    const promise = component.getReservasByUserId();
 
-  const req = httpMock.expectOne(`${API_URL}/usuario/${UUID}`);
-  req.error(new ErrorEvent('Network error'));
+    const req = httpMock.expectOne(`${API_URL}/usuario/${UUID}`);
+    req.error(new ErrorEvent('Network error'));
 
-  const result = await promise;
+    const result = await promise;
 
-  expect(result).toEqual([]);
-  expect(component.reservas).toEqual([]);
-});
+    expect(result).toEqual([]);
+    expect(component.reservas).toEqual([]);
+  });
 });
