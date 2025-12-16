@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AuthService } from '../services/auth.service';
 import { environment } from '../../enviroments/enviroment';
+
 describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
@@ -13,6 +14,7 @@ describe('LoginComponent', () => {
   let router: Router;
 
   const AUTH_URL = `${environment.apiAuthUrl}/api/auth/login`;
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [LoginComponent],
@@ -25,32 +27,35 @@ describe('LoginComponent', () => {
     httpMock = TestBed.inject(HttpTestingController);
     router = TestBed.inject(Router);
 
-    fixture.detectChanges(); // ngOnInit
+    fixture.detectChanges(); // Renderiza el HTML inicial
   });
 
   afterEach(() => {
     httpMock.verify();
     localStorage.clear();
+    // NOTA: Eliminamos la limpieza manual del DOM aquí porque causaba el error
+    // "The node to be removed is not a child of this node".
+    // Angular se encarga de destruir el componente automáticamente.
   });
+
   it('debería crearse', () => {
     expect(component).toBeTruthy();
   });
-  it('debería inicializar el formulario', () => {
+
+  it('debería inicializar el formulario correctamente', () => {
     expect(component.loginForm).toBeDefined();
     expect(component.f['user_name']).toBeDefined();
     expect(component.f['password']).toBeDefined();
-  });
-  it('el formulario debería ser inválido inicialmente', () => {
     expect(component.loginForm.invalid).toBeTrue();
   });
-  it('login no debería llamar al backend si el formulario es inválido', () => {
-    spyOn<any>(component, 'authenticateUser');
 
+  it('login no debería proceder si el formulario es inválido', () => {
+    const authSpy = spyOn<any>(component, 'authenticateUser');
     component.login();
-
     expect(component.loginForm.touched).toBeTrue();
-    expect(component['authenticateUser']).not.toHaveBeenCalled();
+    expect(authSpy).not.toHaveBeenCalled();
   });
+
   it('login debería llamar al backend con credenciales válidas', () => {
     component.loginForm.setValue({
       user_name: 'admin',
@@ -65,76 +70,101 @@ describe('LoginComponent', () => {
       userName: 'admin',
       password: '123456',
     });
+    req.flush({});
   });
-  it('debería guardar sesión y redirigir al hacer login exitoso', () => {
+
+  it('debería guardar sesión completa y redirigir al hacer login exitoso', () => {
     spyOn(router, 'navigate');
 
     component.loginForm.setValue({
-      user_name: 'admin',
-      password: '123456',
+      user_name: 'testuser',
+      password: 'password',
     });
 
     component.login();
 
     const req = httpMock.expectOne(AUTH_URL);
+    const mockResponse = {
+      accessToken: 'token_abc',
+      roleNombre: 'medico',
+      areaNombre: 'Cardiologia',
+      userId: '10',
+      userName: 'doc_house',
+      nombre: 'Gregory',
+      apellido: 'House',
+      email: 'house@hospital.com',
+    };
 
-    req.flush({
-      accessToken: 'token123',
-      roleNombre: 'admin',
-      areaNombre: 'IT',
-      userId: '1',
-      userName: 'admin',
-      nombre: 'Juan',
-      apellido: 'Pérez',
-      email: 'juan@test.com',
+    req.flush(mockResponse);
+
+    expect(localStorage.getItem('accessToken')).toBe('token_abc');
+    const sesionGuardada = JSON.parse(localStorage.getItem('sesion')!);
+
+    expect(sesionGuardada).toEqual({
+      logueado: true,
+      role: 'medico',
+      area: 'Cardiologia',
+      userId: '10',
+      userName: 'doc_house',
+      nombre: 'Gregory',
+      apellido: 'House',
+      email: 'house@hospital.com',
+      token: 'token_abc',
     });
 
-    const sesion = JSON.parse(localStorage.getItem('sesion')!);
-
-    expect(sesion.logueado).toBeTrue();
-    expect(sesion.role).toBe('admin');
     expect(router.navigate).toHaveBeenCalledWith(['/']);
   });
-  it('debería marcar error en login fallido', () => {
+
+  it('debería manejar error en login (credenciales incorrectas)', () => {
+    spyOn(console, 'error'); // Silenciar error en consola
+
     component.loginForm.setValue({
-      user_name: 'admin',
-      password: 'wrong',
+      user_name: 'baduser',
+      password: 'badpass',
     });
 
     component.login();
 
     const req = httpMock.expectOne(AUTH_URL);
-    req.flush({}, { status: 401, statusText: 'Unauthorized' });
+    req.flush({ message: 'Credenciales inválidas' }, { status: 401, statusText: 'Unauthorized' });
 
     expect(component.error).toBeTrue();
   });
 
-  // it('togglePasswordVisibility debería alternar el tipo de input', () => {
-  //   const input = document.createElement('input');
-  //   input.type = 'password';
-  //   input.id = 'password';
-  //   document.body.appendChild(input);
+  it('togglePasswordVisibility debería alternar el tipo de input password <-> text', () => {
+    // Buscamos el input real en el DOM renderizado por el componente
+    // Nota: Esto asume que tu login.component.html tiene un <input id="password">
+    let input = document.getElementById('password') as HTMLInputElement;
 
-  //   // Primer toggle: password -> text
-  //   component.togglePasswordVisibility();
-  //   expect(input.type).toBe('text');
+    // Si el input es nulo, significa que el template HTML no tiene id="password".
+    // En ese caso el test fallará con un mensaje claro.
+    if (!input) {
+      fail(
+        'No se encontró el elemento <input id="password"> en el DOM. Verifica el HTML del componente.'
+      );
+      return;
+    }
 
-  //   // Segundo toggle: text -> password
-  //   component.togglePasswordVisibility();
-  //   expect(input.type).toBe('password');
+    // Aseguramos estado inicial
+    input.type = 'password';
 
-  //   document.body.removeChild(input);
-  // });
-  
-  it('user_name debería ser requerido', () => {
-    const control = component.f['user_name'];
-    control.setValue('');
-    expect(control.invalid).toBeTrue();
+    // 1. Ejecutar toggle -> Debería cambiar a text
+    component.togglePasswordVisibility();
+    expect(input.type).toBe('text');
+
+    // 2. Ejecutar toggle de nuevo -> Debería volver a password
+    component.togglePasswordVisibility();
+    expect(input.type).toBe('password');
   });
 
-  it('password debería ser requerido', () => {
-    const control = component.f['password'];
-    control.setValue('');
-    expect(control.invalid).toBeTrue();
+  it('validaciones de campos individuales', () => {
+    const userControl = component.f['user_name'];
+    const passControl = component.f['password'];
+
+    userControl.setValue('');
+    passControl.setValue('');
+
+    expect(userControl.hasError('required')).toBeTrue();
+    expect(passControl.hasError('required')).toBeTrue();
   });
 });
