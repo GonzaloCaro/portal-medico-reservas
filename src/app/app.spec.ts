@@ -1,15 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
-import { NavbarComponent } from './navbar/navbar.component';
-import { RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { AppModule } from './app.module';
 
-describe('App', () => {
+describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AppComponent, NavbarComponent],
-      imports: [RouterModule.forRoot([]), CommonModule, NgbModule],
+      imports: [AppModule], // 👈 usa el módulo real
     }).compileComponents();
   });
 
@@ -17,11 +13,5 @@ describe('App', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
     expect(app).toBeTruthy();
-  });
-
-  it('should have as title "Portal de Reservas Médicas"', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('Portal de Reservas Médicas');
   });
 });

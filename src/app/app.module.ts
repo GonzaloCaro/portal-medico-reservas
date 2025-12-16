@@ -18,6 +18,7 @@ import { CommonModule } from '@angular/common';
 import { LaboratoriosComponent } from './laboratorios/laboratorios.component';
 import { FormReservasComponent } from './reservas/form_reservas/form_reservas.component';
 import { Modal } from './shared/modal/modal';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { Modal } from './shared/modal/modal';
     FormsModule,
     NgbModule,
     NgbCollapseModule,
+    RouterModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

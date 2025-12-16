@@ -99,8 +99,7 @@ export class NavbarComponent implements OnInit {
    * @returns {boolean} True si es admin, false si es usuario normal o no hay sesión
    */
   isAdmin(): boolean {
-    const sesion = this.getSesion();
-    return sesion?.tipo !== 'usuario';
+    return this.userRole === 'admin';
   }
 
   get filteredNavOptions(): NavOptions[] {

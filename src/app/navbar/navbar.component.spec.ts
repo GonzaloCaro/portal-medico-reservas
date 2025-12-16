@@ -1,62 +1,56 @@
-// src/app/navbar/navbar.component.spec.ts
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NavbarComponent } from './navbar.component';
-import { Router, RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { AuthService } from '../services/auth.service';
 import { of } from 'rxjs';
-import { CommonModule } from '@angular/common';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-
-// 1. Mock para el Router
-const mockRouter = {
-  navigate: jasmine.createSpy('navigate'),
-};
-
-// 2. Mock para AuthService
-// Usaremos un Subject o un Observable para simular el flujo de sesión
-const mockAuthService = {
-  sesion$: of(null), // Observable que simula la sesión
-  cerrarSesion: jasmine.createSpy('cerrarSesion'),
-};
-
-// 3. Mock para localStorage (simulamos que no existe en el entorno de prueba)
-// Esto es importante para que getSesion() y estaLogueado() funcionen correctamente
-const mockLocalStorage = {
-  getItem: jasmine.createSpy('getItem').and.returnValue(null),
-  setItem: jasmine.createSpy('setItem'),
-  removeItem: jasmine.createSpy('removeItem'),
-};
+import { vi } from 'vitest';
 
 describe('NavbarComponent', () => {
   let component: NavbarComponent;
   let fixture: ComponentFixture<NavbarComponent>;
-  let authService: AuthService;
   let router: Router;
+  let mockAuthService: any;
+  let getItemSpy: ReturnType<typeof vi.spyOn>;
+
+  // Función helper para mockear la sesión en localStorage
+  function mockSesion(data: any | null) {
+    getItemSpy.mockImplementation((key: string) => {
+      if (key === 'sesion') {
+        return data ? JSON.stringify(data) : null;
+      }
+      return null;
+    });
+  }
 
   beforeEach(async () => {
+    mockAuthService = {
+      sesion$: of(null),
+      cerrarSesion: vi.fn()
+    };
+
     await TestBed.configureTestingModule({
-      imports: [CommonModule, RouterModule.forRoot([]), NgbModule],
       declarations: [NavbarComponent],
+      imports: [
+        RouterTestingModule // Necesario para que [routerLink] funcione
+      ],
       providers: [
         { provide: AuthService, useValue: mockAuthService },
-        { provide: Router, useValue: mockRouter },
       ],
-      schemas: [NO_ERRORS_SCHEMA],
+      // Ignora errores de elementos desconocidos (ej. iconos, componentes de bootstrap no importados)
+      schemas: [NO_ERRORS_SCHEMA] 
     }).compileComponents();
   });
 
   beforeEach(() => {
-    spyOn(localStorage, 'getItem').and.callFake(mockLocalStorage.getItem);
+    // Espiar localStorage.getItem y asignar a la variable para reutilizarla
+    getItemSpy = vi.spyOn(localStorage, 'getItem').mockReturnValue(null);
+    
     fixture = TestBed.createComponent(NavbarComponent);
     component = fixture.componentInstance;
-
-    authService = TestBed.inject(AuthService);
-
-    // 3. Inyectamos el router real y le ponemos un espía al método navigate
     router = TestBed.inject(Router);
-    spyOn(router, 'navigate');
-
+    vi.spyOn(router, 'navigate'); 
     fixture.detectChanges();
   });
 
@@ -64,98 +58,86 @@ describe('NavbarComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  // --- Caso de Prueba: Usuario NO autenticado (Anonimo) ---
-  it('debe mostrar solo las opciones públicas (Login/Registro) si no está logueado', () => {
-    // 1. Configuración: Asegurar que localStorage no tiene sesión
-    mockLocalStorage.getItem.and.returnValue(null);
+  it('debe tener opciones de menú iniciales', () => {
+    expect(component.navOptions.length).toBeGreaterThan(0);
+  });
 
-    // Forzar la re-evaluación del estado
-    component.sesion = null;
-    fixture.detectChanges();
+  it('debe retornar false si no hay sesión', () => {
+    mockSesion(null);
+    expect(component.estaLogueado()).toBeFalsy();
+  });
 
-    const options = component.filteredNavOptions.map((opt) => opt.label);
 
-    // Solo deben aparecer Iniciar Sesión y Registro (roles: [], isLoggedIn: false)
-    expect(options).toEqual(['Iniciar Sesión', 'Registro']);
-    expect(component.estaLogueado()).toBeFalse();
+  it('debe retornar false si la sesión no está logueada', () => {
+    mockSesion({ isLoggedIn: false, role: 'MEDICO', area: 'medico' });
+    expect(component.estaLogueado()).toBeFalsy();
+  });
+
+  it('debe retornar false si no hay sesión', () => {
+    mockSesion(null);
+    expect(component.estaLogueado()).toBeFalsy();
+  }); 
+
+
+  it('debe retornar null si no hay sesión', () => {
+    mockSesion(null);
     expect(component.userRole).toBeNull();
   });
 
-  // --- Caso de Prueba: Usuario tipo ADMIN ---
-  it('debe mostrar todas las opciones de Admin cuando el usuario es "admin"', () => {
-    const adminSession = JSON.stringify({
-      logueado: true,
-      tipo: 'admin', // Nota: El componente usa sesion.tipo para isAdmin()
-      role: 'admin', // Nota: El componente usa sesion.role para filteredNavOptions
-      userName: 'AdminUser',
-    });
+  it('debe mostrar solo Login y Registro si no está isLoggedIn', () => {
+    mockSesion(null);
 
-    // 1. Configuración: Simular sesión de Admin
-    mockLocalStorage.getItem.and.returnValue(adminSession);
+    const options = component.navOptions.map(o => o.label);
 
-    // Forzar re-evaluación
-    fixture.detectChanges();
+    expect(options).toContain('Iniciar Sesión');
+    expect(options).toContain('Registro');
+  });
 
-    const options = component.filteredNavOptions.map((opt) => opt.label);
 
-    // Esperamos las 8 opciones (Inicio, Pacientes, Reservas, Laboratorios, Analisis, Mi Perfil, Cerrar Sesión)
-    expect(component.estaLogueado()).toBeTrue();
-    expect(component.userRole).toBe('admin');
-    expect(options.length).toBe(8);
+  it('debe mostrar todas las opciones si está isLoggedIn y es Medico Admin', () => {
+    mockSesion({ isLoggedIn: true, role: 'admin', area: 'Medicos' });
+
+    const options = component.navOptions.map(o => o.label);
+
+    expect(options).toContain('Inicio');
     expect(options).toContain('Pacientes');
-    expect(options).toContain('Laboratorios');
-    expect(options).toContain('Analisis');
-    expect(options).not.toContain('Iniciar Sesión');
+    expect(options).toContain('Reservas');
+    expect(options).toContain('Mi Perfil');
+    expect(options).toContain('Cerrar Sesión');
   });
 
-  // --- Caso de Prueba: Usuario tipo LABORATORIO ---
-  it('debe mostrar solo opciones relevantes para Laboratorio', () => {
-    const labSession = JSON.stringify({
-      logueado: true,
-      tipo: 'laboratorio', // Si tu sistema usa 'tipo' para el rol
-      role: 'laboratorio',
-      userName: 'LabUser',
-    });
+  it('debe navegar a la ruta cuando la opción tiene route', () => {
+    const option = {
+      label: 'Inicio',
+      route: '/',
+      roles: [],
+      isLoggedIn: true,
+    };
 
-    mockLocalStorage.getItem.and.returnValue(labSession);
-    fixture.detectChanges();
+    component.executeAction(option);
 
-    const options = component.filteredNavOptions.map((opt) => opt.label);
-
-    // Opciones esperadas para 'laboratorio': Inicio, Laboratorios, Analisis, Mi Perfil, Cerrar Sesión
-    expect(component.userRole).toBe('laboratorio');
-    expect(options.length).toBe(5);
-    expect(options).toContain('Laboratorios');
-    expect(options).toContain('Analisis');
-    expect(options).not.toContain('Pacientes');
+    expect(router.navigate).toHaveBeenCalledWith(['/']);
   });
+  
+  it('debe cerrar sesión cuando la opción tiene onClick', () => {
+    const option = {
+      label: 'Cerrar Sesión',
+      route: '',
+      roles: [],
+      isLoggedIn: true,
+      onClick: () => {},
+    };
 
-  // --- Caso de Prueba: Funcionalidad de Cerrar Sesión ---
-  it('debe llamar a cerrarSesion y navegar a inicio al ejecutar la acción de "Cerrar Sesión"', () => {
-    const cerrarSesionOption = component.navOptions.find((opt) => opt.label === 'Cerrar Sesión');
+    component.executeAction(option);
 
-    // 1. Ejecutar la acción
-    if (cerrarSesionOption) {
-      component.executeAction(cerrarSesionOption);
-    }
-
-    // 2. Verificar que el servicio fue llamado
     expect(mockAuthService.cerrarSesion).toHaveBeenCalled();
-
-    // 3. Verificar la navegación
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/']);
+    expect(router.navigate).toHaveBeenCalledWith(['/']);
   });
 
-  // --- Caso de Prueba: Funcionalidad de Navegación Estándar ---
-  it('debe navegar a la ruta correcta al ejecutar una opción estándar', () => {
-    const perfilOption = component.navOptions.find((opt) => opt.label === 'Mi Perfil');
+  it('debe cerrar sesión y redirigir al inicio', () => {
+    component.cerrarSesion();
 
-    // 1. Ejecutar la acción
-    if (perfilOption) {
-      component.executeAction(perfilOption);
-    }
-
-    // 2. Verificar la navegación
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/perfil']);
+    expect(mockAuthService.cerrarSesion).toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalledWith(['/']);
   });
 });

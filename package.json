@@ -50,6 +50,7 @@
     "@types/express": "^5.0.1",
     "@types/jasmine": "^5.1.13",
     "@types/node": "^20.17.19",
+    "@vitest/coverage-v8": "^4.0.15",
     "jasmine-core": "^5.13.0",
     "jsdom": "^27.1.0",
     "karma-jasmine": "^5.1.0",
