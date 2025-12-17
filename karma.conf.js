@@ -6,22 +6,19 @@ module.exports = function (config) {
       require('karma-jasmine'),
       require('karma-chrome-launcher'),
       require('karma-jasmine-html-reporter'),
-      require('karma-coverage'), // <--- IMPORTANTE
+      require('karma-coverage'),
       require('@angular-devkit/build-angular/plugins/karma'),
     ],
     client: {
-      clearContext: false, // deja visible la salida del test en el navegador
+      clearContext: false,
     },
-    // Configuración del reporte de cobertura
     coverageReporter: {
       dir: require('path').join(__dirname, './coverage/portal-medico-reservas'),
       subdir: '.',
-      reporters: [
-        { type: 'html' }, // Genera la página web visual
-        { type: 'text-summary' }, // Muestra un resumen en la consola
-      ],
+      reporters: [{ type: 'html' }, { type: 'text-summary' }, { type: 'lcovonly' }],
     },
-    reporters: ['progress', 'kjhtml'],
+    // Agrega 'coverage' aquí para asegurar que se ejecute
+    reporters: ['progress', 'kjhtml', 'coverage'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
